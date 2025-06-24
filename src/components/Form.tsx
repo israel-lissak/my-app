@@ -1,64 +1,19 @@
 import { useForm } from '@tanstack/react-form'
-import { z } from 'zod/v4'
+import {type FormValuesType} from '../types/FormValuesType'
+import { UserFormValidationSchema, createOnChangeValidator, validateConfirmPassword } from '../schemas/UserFormValidationSchema'
 
-
+const defaultValues: FormValuesType = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+}
 export default function Form() {
 
-    type FormValuesType = {
-        name: string
-        email: string
-        password: string
-        confirmPassword: string
-    }
-
-    const ZodSchema = z.object({
-        name: z.string().min(1, { message: 'Name is required' }),
-        email: z.string().email({ message: 'Invalid email address' }),
-        password: z.string().min(3, { message: 'Password must be at least 3 characters long' }),
-        confirmPassword: z.string(),
-    }).refine((data) => data.password === data.confirmPassword, {
-        path: ['confirmPassword'],
-        message: 'Passwords do not match',
-    })
-
-    const createOnChangeValidator = (schema: z.ZodType) => ({ value, fieldApi }: { value: any, fieldApi: any }) => {
-        if (fieldApi.state.meta.isTouched) {
-            const result = schema.safeParse(value);
-            if (!result.success) {
-                return result.error.flatten().formErrors[0];
-            }
-        }
-        return undefined;
-    };
-
-    const validateConfirmPassword = ({ value, fieldApi }: { value: any, fieldApi: any }) => {
-        // First, check if the field has been touched
-        if (!fieldApi.state.meta.isTouched) {
-            return undefined;
-        }
-
-        // Then, validate against the Zod schema for its own rules
-        const passwordCheck = ZodSchema.shape.confirmPassword.safeParse(value)
-        if (!passwordCheck.success) {
-            return passwordCheck.error.flatten().formErrors[0]
-        }
-        
-        // Finally, check for cross-field validation
-        if (fieldApi.form.getFieldValue('password') !== value) {
-            return 'Passwords do not match'
-        }
-        return undefined
-    };
-
     const form = useForm({
-        defaultValues: {
-            name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-        } as FormValuesType,
+        defaultValues: defaultValues,
         validators: {
-            onSubmit: ZodSchema,
+            onSubmit: UserFormValidationSchema,
         },
         onSubmit: async ({ value }) => {
             console.log(value)
@@ -79,8 +34,8 @@ export default function Form() {
                 <form.Field
                     name="name"
                     validators={{
-                        onBlur: ZodSchema.shape.name,
-                        onChange: createOnChangeValidator(ZodSchema.shape.name),
+                        onBlur: UserFormValidationSchema.shape.name,
+                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.name),
                     }}
                 >
                     {(field) => (
@@ -113,8 +68,8 @@ export default function Form() {
                 <form.Field
                     name="email"
                     validators={{
-                        onBlur: ZodSchema.shape.email,
-                        onChange: createOnChangeValidator(ZodSchema.shape.email),
+                        onBlur: UserFormValidationSchema.shape.email,
+                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.email),
                     }}
                 >
                     {(field) => (
@@ -148,8 +103,8 @@ export default function Form() {
                 <form.Field
                     name="password"
                     validators={{
-                        onBlur: ZodSchema.shape.password,
-                        onChange: createOnChangeValidator(ZodSchema.shape.password),
+                        onBlur: UserFormValidationSchema.shape.password,
+                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.password),
                     }}
                 >
                     {(field) => (
