@@ -1,4 +1,4 @@
-import RecipeForm from '@/components/RecipeForm'
+import SliceForm from '@/components/SliceForm'
 import UserForm from '@/components/UserForm'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -13,7 +13,7 @@ function App() {
         <p className="text-5xl font-bold">Beautiful Form</p>
         <div className="flex gap-4 mt-8 w-full items-center justify-center">
           <UserForm />
-          <RecipeForm />
+          <SliceForm />
         </div>
       </header>
     </div>

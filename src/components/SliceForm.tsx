@@ -1,19 +1,20 @@
 import { useForm } from '@tanstack/react-form'
-import {type UserFormValuesType} from '../types/UserFormValuesType'
-import { UserFormValidationSchema, createOnChangeValidator, validateConfirmPassword } from '../schemas/UserFormValidationSchema'
+import {type SliceValuesType} from '../types/SliceValuesType'
+import { SliceSchema } from '../schemas/SliceSchema'
+import RecipeForm from './RecipeForm'
 
-const defaultValues: UserFormValuesType = {
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+const defaultValues: SliceValuesType = {
+    duration: 0,
+    power: 0,
+    variation: 'single', // Default variation, can be 'single', 'multi' or 'cyclic'
+    recipes: []
 }
-export default function UserForm() {
+export default function SliceForm() {
 
     const form = useForm({
         defaultValues: defaultValues,
         validators: {
-            onSubmit: UserFormValidationSchema,
+            onSubmit: SliceSchema,
         },
         onSubmit: async ({ value }) => {
             console.log(value)
@@ -23,7 +24,7 @@ export default function UserForm() {
 
     return (
         <div>
-            <h2 className='text-2xl font-bold mb-4'>User Form</h2>
+            <h2 className='text-2xl font-bold mb-4'>Slice Form</h2>
             <form
                 onSubmit={(e) => {
                     e.preventDefault()
@@ -33,61 +34,27 @@ export default function UserForm() {
                 className='flex flex-col gap-4 border-2 border-gray-300 p-4 rounded-md'
             >
                 <form.Field
-                    name="name"
+                    name="duration"
                     validators={{
-                        onBlur: UserFormValidationSchema.shape.name,
-                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.name),
+                        onBlur: SliceSchema.shape.duration,
+                        onChange: SliceSchema.shape.duration,
                     }}
                 >
                     {(field) => (
                         <div className='flex gap-2 items-center flex-col'>
                             <div className='flex gap-2 items-center w-full'>
-                                <label htmlFor="name">Name:</label>
+                                <label htmlFor="duration">Duration:</label>
                                 <input
                                     className='border-2 border-gray-300 rounded-md p-2 flex-1'
-                                    type="text"
-                                    id="name"
-                                    name='name'
+                                    type="number"
+                                    id="duration"
+                                    name='duration'
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
                                     onMouseLeave={() => {
                                         if (field.state.meta.isDirty) field.handleBlur()
                                     }}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                />
-                            </div>
-                            {field.state.meta.errors.length > 0 && (
-                                <em className='text-red-500 text-sm mt-1'>
-                                    {field.state.meta.errors.map((err: any) =>
-                                        typeof err === 'string' ? err : err.message
-                                    ).join(', ')}
-                                </em>
-                            )}
-                        </div>
-                    )}
-                </form.Field>
-                <form.Field
-                    name="email"
-                    validators={{
-                        onBlur: UserFormValidationSchema.shape.email,
-                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.email),
-                    }}
-                >
-                    {(field) => (
-                        <div className='flex gap-2 items-center flex-col'>
-                            <div className='flex gap-2 items-center w-full'>
-                                <label htmlFor="email">Email:</label>
-                                <input
-                                    className='border-2 border-gray-300 rounded-md p-2 flex-1'
-                                    type="email"
-                                    id="email"
-                                    name='email'
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onMouseLeave={() => {
-                                        if (field.state.meta.isDirty) field.handleBlur()
-                                    }}
-                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                                 />
                             </div>
                             {field.state.meta.errors.length > 0 && (
@@ -102,30 +69,27 @@ export default function UserForm() {
                 </form.Field>
 
                 <form.Field
-                    name="password"
+                    name="power"
                     validators={{
-                        onBlur: UserFormValidationSchema.shape.password,
-                        onChange: createOnChangeValidator(UserFormValidationSchema.shape.password),
+                        onBlur: SliceSchema.shape.power,
+                        onChange: SliceSchema.shape.power,
                     }}
                 >
                     {(field) => (
                         <div className='flex gap-2 items-center flex-col'>
                             <div className='flex gap-2 items-center w-full'>
-                                <label htmlFor="password">Password:</label>
+                                <label htmlFor="power">Power:</label>
                                 <input
                                     className='border-2 border-gray-300 rounded-md p-2 flex-1'
-                                    type="password"
-                                    id="password"
-                                    name='password'
+                                    type="number"
+                                    id="power"
+                                    name='power'
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
                                     onMouseLeave={() => {
                                         if (field.state.meta.isDirty) field.handleBlur()
                                     }}
-                                    onChange={(e) => {
-                                        field.handleChange(e.target.value)
-                                        field.form.validateField('confirmPassword', 'change')
-                                    }}
+                                    onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                                 />
                             </div>
                             {field.state.meta.errors.length > 0 && (
@@ -140,28 +104,32 @@ export default function UserForm() {
                 </form.Field>
 
                 <form.Field
-                    name="confirmPassword"
+                    name="variation"
                     validators={{
-                        onBlur: validateConfirmPassword,
-                        onChange: validateConfirmPassword,
+                        onBlur: SliceSchema.shape.variation,
+                        onChange: SliceSchema.shape.variation,
                     }}
                 >
                     {(field) => (
                         <div className='flex gap-2 items-center flex-col'>
                             <div className='flex gap-2 items-center w-full'>
-                                <label htmlFor="confirmPassword">Confirm Password:</label>
-                                <input
+                                <label htmlFor="variation">Variation:</label>
+                                <select
                                     className='border-2 border-gray-300 rounded-md p-2 flex-1'
-                                    type="password"
-                                    id="confirmPassword"
-                                    name='confirmPassword'
+                                    id="variation"
+                                    name='variation'
+                                    defaultValue={ field.state.value || '' }
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
                                     onMouseLeave={() => {
                                         if (field.state.meta.isDirty) field.handleBlur()
                                     }}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                />
+                                    onChange={(e) => field.handleChange(e.target.value as SliceValuesType['variation'])}
+                                >
+                                    <option value="single">Single</option>
+                                    <option value="multi">Multi</option>
+                                    <option value="cyclic">Cyclic</option>
+                                </select>
                             </div>
                             {field.state.meta.errors.length > 0 && (
                                 <em className='text-red-500 text-sm mt-1'>
@@ -173,6 +141,10 @@ export default function UserForm() {
                         </div>
                     )}
                 </form.Field>
+
+                {/* Recipes fields is changing based on the variation */}
+                <RecipeForm/>
+
                 <form.Subscribe
                     selector={(state) => [state.canSubmit, state.isSubmitting]}
                     children={([canSubmit, isSubmitting]) => (

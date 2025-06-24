@@ -1,4 +1,4 @@
-export type FormValuesType = {
+export type UserFormValuesType = {
     name: string
     email: string
     password: string
