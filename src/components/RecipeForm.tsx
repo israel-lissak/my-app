@@ -8,7 +8,7 @@ const defaultValues: FormValuesType = {
     password: '',
     confirmPassword: '',
 }
-export default function Form() {
+export default function RecipeForm() {
 
     const form = useForm({
         defaultValues: defaultValues,
@@ -23,6 +23,7 @@ export default function Form() {
 
     return (
         <div>
+            <h2 className='text-2xl font-bold mb-4'>Recipe Form</h2>
             <form
                 onSubmit={(e) => {
                     e.preventDefault()
