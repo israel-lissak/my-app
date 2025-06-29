@@ -7,9 +7,14 @@
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write ."
+    
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-form": "^1.12.3",
     "@tanstack/react-router": "^1.121.2",
