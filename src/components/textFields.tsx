@@ -1,5 +1,10 @@
 import { useFieldContext } from './formContext.tsx'
 
+/**
+ * TextField component for rendering a text input with label and error handling.
+ * @param {string} label - The label for the text field.
+ * @returns A text input with label and error handling.
+ */
 export default function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
 

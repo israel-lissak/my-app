@@ -1,6 +1,12 @@
 import { useFieldContext } from './formContext.tsx'
 
-// קומפוננטה גנרית לשדה select
+/**
+ * SelectField component for rendering a select input with options.
+ * @param {string} label - The label for the select field.
+ * @param {T[]} options - The options to display in the select dropdown.
+ * @param {(option: T) => string} getOptionLabel - Function to get the label for each option.
+ * @returns A select input with options and error handling.
+ */
 export default function SelectField<T>({ label, options, getOptionLabel }: { label: string, options: T[], getOptionLabel: (option: T) => string}) {
   const field = useFieldContext<T>()
 

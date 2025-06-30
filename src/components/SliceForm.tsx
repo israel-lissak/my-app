@@ -8,8 +8,12 @@ const defaultValues: SliceValuesType = {
     variation: 'single', // Default variation, can be 'single', 'multi' or 'cyclic'
     recipes: []
 }
+
+/**
+ * SliceForm component for managing slice values.
+ * @returns A form component for managing slice values.
+ */
 export default function SliceForm() {
-    
 
     const form = useAppForm({
         defaultValues: defaultValues,
@@ -63,6 +67,8 @@ export default function SliceForm() {
                         getOptionLabel={(option) => option as string}
                     />}
                 />
+
+                {/* Recipes */}
 
                 <form.AppForm>
                     <form.SubscribeButton label="Submit"/>

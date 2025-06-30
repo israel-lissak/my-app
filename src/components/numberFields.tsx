@@ -1,8 +1,12 @@
 import { useFieldContext } from './formContext.tsx'
 
+/**
+ * NumberField component for rendering a number input with label and error handling.
+ * @param {string} label - The label for the number field.
+ * @returns A number input with label and error handling.
+ */
 export default function NumberField({ label }: { label: string }) {
   const field = useFieldContext<number>()
-
 
   return (
     <div >
