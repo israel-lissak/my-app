@@ -99,6 +99,13 @@ export default function SliceForm() {
                                                     label="Kind:"
                                                     options={['cake', 'pancake']}
                                                     getOptionLabel={(option) => option as string}
+                                                    onValueChange={(value) => {
+                                                        if (value === 'cake') {
+                                                            subField.handleChange({ kind: 'cake', eggs_count: 0 })
+                                                        } else if (value === 'pancake') {
+                                                            subField.handleChange({ kind: 'pancake', radius: 0, has_syrup: false })
+                                                        }
+                                                    }}
                                                 />}
                                             />
 
