@@ -1,11 +1,11 @@
 import { createFormHook } from '@tanstack/react-form'
-import { lazy } from 'react'
 import { fieldContext, formContext, useFormContext } from './formContext.tsx'
 
-const TextField = lazy(() => import('./textFields.tsx'))
-const NumberField = lazy(() => import('./numberFields.tsx'))
-const SelectField = lazy(() => import('./selectFields.tsx'))
-const CheckboxField = lazy(() => import('./checkboxField.tsx'))
+import CheckboxField from './checkboxField.tsx'
+import NumberField from './numberFields.tsx'
+import SelectField from './selectFields.tsx'
+import TextField from './textFields.tsx'
+
 
 
 function SubscribeButton({ label }: { label: string }) {
