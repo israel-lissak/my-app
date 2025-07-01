@@ -5,9 +5,10 @@ import { useFieldContext } from '../formContext.tsx'
  * @param {string} label - The label for the select field.
  * @param {T[]} options - The options to display in the select dropdown.
  * @param {(option: T) => string} getOptionLabel - Function to get the label for each option.
+ * @param onValueChange - Callback function to handle value changes.
  * @returns A select input with options and error handling.
  */
-export default function SelectField<T>({ label, options, getOptionLabel }: { label: string, options: T[], getOptionLabel: (option: T) => string}) {
+export default function SelectField<T>({ label, options, getOptionLabel, onValueChange }: { label: string, options: T[], getOptionLabel: (option: T) => string , onValueChange?: (value: T) => void }) {
   const field = useFieldContext<T>()
 
   return (
@@ -22,6 +23,9 @@ export default function SelectField<T>({ label, options, getOptionLabel }: { lab
               (option) => String(option) === e.target.value
             )
             field.handleChange(selected as T)
+            if (onValueChange) {
+              onValueChange(selected as T)
+            }
           }}
           >
           {options.map((option, idx) => (
