@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form'
-import {type UserFormValuesType} from '../types/UserFormValuesType'
-import { UserFormValidationSchema, createOnChangeValidator, validateConfirmPassword } from '../schemas/UserFormValidationSchema'
+import { UserFormValidationSchema, createOnChangeValidator, validateConfirmPassword } from '../../schemas/UserFormValidationSchema'
+import { type UserFormValuesType } from '../../types/UserFormValuesType'
 
 const defaultValues: UserFormValuesType = {
     name: '',
