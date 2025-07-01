@@ -1,5 +1,5 @@
-import {type SliceValuesType} from '../types/SliceValuesType'
-import { SliceSchema } from '../schemas/SliceSchema'
+import { SliceSchema } from '../../schemas/SliceSchema'
+import { type SliceValuesType } from '../../types/SliceValuesType'
 import { useAppForm } from './form'
 
 const defaultValues: SliceValuesType = {

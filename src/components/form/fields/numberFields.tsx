@@ -1,4 +1,4 @@
-import { useFieldContext } from './formContext.tsx'
+import { useFieldContext } from '../formContext.tsx'
 
 /**
  * NumberField component for rendering a number input with label and error handling.

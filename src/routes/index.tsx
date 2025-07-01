@@ -1,4 +1,4 @@
-import SliceForm from '@/components/SliceForm'
+import SliceForm from '@/components/form/SliceForm'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({

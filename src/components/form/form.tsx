@@ -1,10 +1,10 @@
 import { createFormHook } from '@tanstack/react-form'
 import { fieldContext, formContext, useFormContext } from './formContext.tsx'
 
-import CheckboxField from './checkboxField.tsx'
-import NumberField from './numberFields.tsx'
-import SelectField from './selectFields.tsx'
-import TextField from './textFields.tsx'
+import CheckboxField from './fields/checkboxField.tsx'
+import NumberField from './fields/numberFields.tsx'
+import SelectField from './fields/selectFields.tsx'
+import TextField from './fields/textFields.tsx'
 
 
 
