@@ -25,7 +25,7 @@ export default function SliceForm() {
 	});
 
 	return (
-		<div>
+		<div className="w-full max-w-2xl mx-auto p-4 max-h-screen overflow-y-auto">
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
