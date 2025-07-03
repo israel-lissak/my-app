@@ -26,7 +26,6 @@ export default function SliceForm() {
 
 	return (
 		<div>
-			<h2 className="text-2xl font-bold mb-4">Slice Form</h2>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
