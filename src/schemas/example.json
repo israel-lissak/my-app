@@ -6,7 +6,7 @@
 			"duration": 4.5,
 			"building_block_kind": "biscuit",
 			"flour": 100,
-			"sugar": 100,
+			"sugar": 1000,
 			"krembo": {
 				"krembo_kind": "vanilla",
 				"wrap": 10
