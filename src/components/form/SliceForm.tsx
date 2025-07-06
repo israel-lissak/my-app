@@ -2,6 +2,7 @@ import { SliceSchema } from "../../schemas/SliceSchema";
 import { type SliceValuesType } from "../../types/SliceValuesType";
 import { useAppForm } from "./form";
 
+//@ts-expect-error variation is required but were not initializing it
 const defaultValues: SliceValuesType = {
 	duration: 0,
 	power: 0,
@@ -155,6 +156,7 @@ export default function SliceForm() {
 								})}
 								<button
 									className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+									//@ts-expect-error push value pushes empty object to the array
 									onClick={() => field.pushValue({})}
 									type="button"
 								>
