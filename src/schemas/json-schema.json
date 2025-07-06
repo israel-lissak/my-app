@@ -1,450 +1,536 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "slices": {
-            "type":"array",
-            "items": {
-                "$ref": "#/definitions/slice"
-            }     
-        }
-    },
-    "allOf": [
-        {
-            "$comment": "If there are at least 2 slices they must have duration defined",
-            "if": {
-                "properties": {
-                    "slices": {
-                        "type": "array",
-                        "minItems": 2
-                    }
-                }
-            },
-            "then": {
-                "properties": {
-                    "slices": {
-                        "items": {
-                            "properties": {
-                                "duration": {
-                                    "type": "number",
-                                    "minimum": 40e-6,
-                                    "maximum": 3e3
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "else": {
-                "properties": {
-                    "slices": {
-                        "items": {
-                            "properties": {
-                                "duration": {
-                                    "type": "null"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    ],
-    "definitions": {
-        "slice": {
-            "type": "object",
-            "required": ["variation", "duration", "recipes", "power"],
-            "properties": {
-                "variation": {
-                    "$ref": "#/definitions/variation"
-                },
-                "duration": {
-                    "type": ["number", "null"],
-                    "$comment": "The correct definition of duration is in the 'if' condition above"
-                },
-                "power": {
-                    "type": "number",
-                    "minimum": 10e-6,
-                    "maximum": 6e9
-                },
-                "recipes": {
-                    "type": "array",
-                    "items": {
-                        "allOf": [
-                            {
-                                "$ref": "#/definitions/recipe"
-                            }
-                        ]
-                    }
-                },
-                "innerSlices": {
-                    "type": "array",
-                    "items": {
-                        "allOf": [
-                            {
-                                "$ref": "#/definitions/slice"
-                            },
-                            {
-                                "properties": {
-                                    "variation": {
-                                        "not": {
-                                            "const": "single"
-                                        }
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            },
-            "allOf": [
-                {
-                    "if": {
-                        "properties": {
-                            "variation": {
-                                "const": "single"
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "recipes": {
-                                "maxItems": 1
-                            }
-                        }
-                    }
-                },
-                {
-                    "if": {
-                        "properties": {
-                            "variation": {
-                                "oneOf": [
-                                    { "const": "multi" },
-                                    { "const": "cyclic" }
-                                ]
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "recipes": {
-                                "minItems": 2
-                            }
-                        }
-                    }
-                },
-                {
-                    "$comment": "this condition makes duration within recipes must be defined",
-                    "if": {
-                        "properties": {
-                            "variation": {
-                                "const": "cyclic"
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "recipes": {
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "properties": {
-                                                "duration": {
-                                                    "type": "number",
-                                                    "minimum": 0
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "else": {
-                        "properties": {
-                            "recipes": {
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "properties": {
-                                                "duration": {
-                                                    "type": "null"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        "variation": {
-            "title": "Determines how the slice behaves",
-            "enum": ["single", "multi", "cyclic"],
-            "oneOf": [
-                {
-                    "const": "single",
-                    "description": "This slice has a single recipe."
-                },
-                {
-                    "const": "multi",
-                    "description": "This slice can have multiple recipes."
-                },
-                {
-                    "const": "cyclic",
-                    "description": "This slice can have multiple recipes."
-                }
-            ]
-        },
-        "recipe": {
-            "required": ["kind"],
-            "oneOf": [
-                {
-                    "type": "object",
-                    "required": ["sugar"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "cake"
-                        },
-                        "duration": true,
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        } 
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["sugar", "flour", "egg_count", "krembo"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "cookie"
-                        },
-                        "duration": true,
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "flour": {
-                            "$ref": "#/definitions/flour"
-                        },
-                        "egg_count":{
-                            "$ref": "#/definitions/egg_count"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["start_cooking", "end_cooking", "cooking_time"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "sweet"
-                        },
-                        "duration": true,
-                        "start_cooking": {
-                            "title": "Start Cooking",
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "end_cooking": {
-                            "title": "End Cooking",
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "cooking_time": {
-                            "title": "Cooking Time",
-                            "type": "number",
-                            "minimum": 40e-6,
-                            "maximum": 3e3
-                        },
-                        "temperature_gap":{
-                            "title": "Temperature Gap",
-                            "$ref": "#/definitions/flour"
-                        },
-                        "cooking_dwell":{
-                            "title": "Cooking Dwell",
-                            "type": "number",
-                            "minimum": 1e-6,
-                            "maximum": 1.5e3
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["sugar", "path"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "pancake"
-                        },
-                        "duration": true,
-                        "path": {
-                            "title": "Path to the pancake",
-                            "type": "string",
-                            "pattern": "^.*[.](bin|xdat|xhdr)$"
-                        },
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["sugar", "path", "flour", "krembo"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "duration": true,
-                        "kind": {
-                            "const": "american_pancake"
-                        },
-                        "path": {
-                            "title": "Path to the pancake",
-                            "type": "string",
-                            "pattern": "^.*[.](wav|mp4)$"
-                        },
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "flour": {
-                            "$ref": "#/definitions/flour"
-                        },
-                        "krembo": {
-                            "$ref": "#/definitions/krembo"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["sugar", "flour", "krembo"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "biscuit"
-                        },
-                        "duration": true,
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "flour": {
-                            "$ref": "#/definitions/flour"
-                        },
-                        "krembo": {
-                            "$ref": "#/definitions/krembo"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["sugar", "flour", "brownie_string", "brownie_time", "brownie_cooking_time"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "brownie"
-                        },
-                        "duration": true,
-                        "brownie_string": {
-                            "title": "Brownie String",
-                            "type": "string",
-                            "pattern": "^[0-9a-fA-F]+$"
-                        },
-                        "sugar": {
-                            "$ref": "#/definitions/sugar"
-                        },
-                        "flour": {
-                            "$ref": "#/definitions/flour"
-                        },
-                        "brownie_time": {
-                            "title": "Brownie Time",
-                            "type": "number"
-                        },
-                        "brownie_cooking_time": {
-                            "title": "Brownie Cooking Time",
-                            "type": "number"
-                        },
-                        "krembo": {
-                            "$ref": "#/definitions/krembo"
-                        }
-                    }
-                }
-
-            ]
-        },
-        "sugar":{
-            "title": "Sugar Content",
-            "description": "Sugar content in grams",
-            "type": "integer",
-            "minimum": 10e6,
-            "maximum": 6e9
-        },
-        "flour": {
-            "title": "Flour Content",
-            "description": "Flour content in grams",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 164e6
-        },
-        "egg_count": {
-            "title": "Flour Content",
-            "description": "Number of eggs used in the recipe",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 164e6
-        },
-        "krembo":{
-            "oneOf": [
-                {
-                    "$comment": "krembo fields are required, but it can be null, this is for the frontend",
-                    "type": "null"
-                },
-                {
-                    "type": "object",
-                    "required": ["kind", "wrap"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "vanilla"
-                        },
-                        "wrap": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 300
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": ["kind", "code", "crackles"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "kind": {
-                            "const": "mocha"
-                        },
-                        "code": {
-                            "title": "Mocha Code",
-                            "type": "string",
-                            "maxLength": 3
-                        },
-                        "crackles": {
-                            "title": "Mocha Crackles",
-                            "type": "string",
-                            "enum": ["I", "N"],
-                            "default": "I",
-                            "oneOf": [
-                                {
-                                    "const": "N",
-                                    "description": "Normal."
-                                },
-                                {
-                                    "const": "I",
-                                    "description": "Inverse."
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
-    }
+	"$schema": "https://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"$schema": true,
+		"slices": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/slice_def"
+			}
+		}
+	},
+	"allOf": [
+		{
+			"$comment": "If there are at least 2 slices they must have duration defined",
+			"if": {
+				"properties": {
+					"slices": {
+						"type": "array",
+						"minItems": 2
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"slices": {
+						"items": {
+							"properties": {
+								"duration": {
+									"type": "number",
+									"minimum": 40e-6,
+									"maximum": 3e3
+								}
+							}
+						}
+					}
+				}
+			},
+			"else": {
+				"properties": {
+					"slices": {
+						"items": {
+							"properties": {
+								"duration": {
+									"type": "null"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	],
+	"definitions": {
+		"variation_def": {
+			"enum": [
+				"single",
+				"multi",
+				"cyclic"
+			]
+		},
+        "base_step_def": {
+			"type": "object",
+			"required": [
+				"variation",
+				"duration"
+			],
+			"properties": {
+				"duration": true,
+				"variation": {
+					"$ref": "#/definitions/variation_def"
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"variation": {
+								"const": "single"
+							}
+						}
+					},
+					"then": {
+						"allOf": [
+							{
+								"$ref": "#/definitions/building_block_def"
+							}
+						]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"variation": {
+								"const": "multi"
+							}
+						}
+					},
+					"then": {
+						"allOf": [
+							{
+								"required": [
+									"techniques"
+								],
+								"additionalProperties": false,
+								"properties": {
+									"variation": true,
+									"duration": true,
+									"techniques": {
+										"type": "array",
+										"minItems": 2,
+										"items": {
+											"allOf": [
+												{
+													"$ref": "#/definitions/base_step_def"
+												},
+												{
+													"properties": {
+														"duration": {
+															"type": "null"
+														},
+														"variation": {
+															"enum": [
+																"single",
+																"cyclic"
+															]
+														}
+													}
+												}
+											]
+										}
+									}
+								}
+							}
+						]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"variation": {
+								"const": "cyclic"
+							}
+						}
+					},
+					"then": {
+						"allOf": [
+							{
+								"required": [
+									"techniques"
+								],
+								"additionalProperties": false,
+								"properties": {
+									"variation": true,
+									"duration": true,
+									"techniques": {
+										"type": "array",
+										"minItems": 2,
+										"items": {
+											"allOf": [
+												{
+													"$ref": "#/definitions/base_step_def"
+												},
+												{
+													"properties": {
+														"variation": {
+															"enum": [
+																"single",
+																"multi"
+															]
+														},
+														"duration": {
+															"type": "number",
+															"minimum": 100
+														}
+													}
+												}
+											]
+										}
+									}
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		"slice_def": {
+			"type": "object",
+			"allOf": [
+				{
+					"$ref": "#/definitions/base_step_def"
+				},
+				{
+					"$comment": "Assuming variation is either multi or cyclic - then techniques is present",
+					"properties": {
+						"techniques": {
+							"items": {
+								"$comment": "Assuming inner variation is also multi/cyclic - we disallow more nested techniques",
+								"properties": {
+									"techniques": {
+										"items": {
+											"$comment": "Then it's not allowed to have even more nesting",
+											"properties": {
+												"variation": {
+													"const": "single"
+												},
+												"techniques": false
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		"building_block_def": {
+			"required": [
+				"building_block_kind"
+			],
+			"oneOf": [
+				{
+					"type": "object",
+					"required": [
+						"sugar"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"variation": {
+							"const": "single"
+						},
+						"building_block_kind": {
+							"const": "cake"
+						},
+						"duration": true,
+						"power": true,
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"sugar",
+						"flour",
+						"egg_count"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"variation": {
+							"const": "single"
+						},
+						"building_block_kind": {
+							"const": "cookie"
+						},
+						"duration": true,
+						"power": true,
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						},
+						"flour": {
+							"$ref": "#/definitions/flour"
+						},
+						"egg_count": {
+							"$ref": "#/definitions/egg_count"
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"start_cooking",
+						"end_cooking",
+						"cooking_time"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"variation": {
+							"const": "single"
+						},
+						"building_block_kind": {
+							"const": "sweet"
+						},
+						"duration": true,
+						"power": true,
+						"start_cooking": {
+							"title": "Start Cooking",
+							"$ref": "#/definitions/sugar"
+						},
+						"end_cooking": {
+							"title": "End Cooking",
+							"$ref": "#/definitions/sugar"
+						},
+						"cooking_time": {
+							"title": "Cooking Time",
+							"type": "number",
+							"minimum": 40,
+							"maximum": 3000
+						},
+						"temperature_gap": {
+							"title": "Temperature Gap",
+							"$ref": "#/definitions/flour"
+						},
+						"cooking_dwell": {
+							"title": "Cooking Dwell",
+							"type": "number",
+							"minimum": 100,
+							"maximum": 1500
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"sugar",
+						"path"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"building_block_kind": {
+							"const": "pancake"
+						},
+						"variation": {
+							"const": "single"
+						},
+						"duration": true,
+						"power": true,
+						"path": {
+							"title": "Path to the pancake",
+							"type": "string",
+							"pattern": "^.*[.](bin|xdat|xhdr)$"
+						},
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"sugar",
+						"path",
+						"flour",
+						"krembo"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"building_block_kind": {
+							"const": "american_pancake"
+						},
+						"variation": {
+							"const": "single"
+						},
+						"duration": true,
+						"power": true,
+						"path": {
+							"title": "Path to the pancake",
+							"type": "string",
+							"pattern": "^.*[.](wav|mp4)$"
+						},
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						},
+						"flour": {
+							"$ref": "#/definitions/flour"
+						},
+						"krembo": {
+							"$ref": "#/definitions/krembo"
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"sugar",
+						"flour",
+						"krembo"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"building_block_kind": {
+							"const": "biscuit"
+						},
+						"variation": {
+							"const": "single"
+						},
+						"duration": true,
+						"power": true,
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						},
+						"flour": {
+							"$ref": "#/definitions/flour"
+						},
+						"krembo": {
+							"$ref": "#/definitions/krembo"
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"sugar",
+						"flour",
+						"brownie_string",
+						"brownie_time",
+						"brownie_cooking_time",
+						"krembo"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"building_block_kind": {
+							"const": "brownie"
+						},
+						"variation": {
+							"const": "single"
+						},
+						"duration": true,
+						"power": true,
+						"brownie_string": {
+							"title": "Brownie String",
+							"type": "string",
+							"pattern": "^[0-9a-fA-F]+$"
+						},
+						"sugar": {
+							"$ref": "#/definitions/sugar"
+						},
+						"flour": {
+							"$ref": "#/definitions/flour"
+						},
+						"brownie_time": {
+							"title": "Brownie Time",
+							"type": "number"
+						},
+						"brownie_cooking_time": {
+							"title": "Brownie Cooking Time",
+							"type": "number"
+						},
+						"krembo": {
+							"$ref": "#/definitions/krembo"
+						}
+					}
+				}
+			]
+		},
+		"sugar": {
+			"title": "Sugar Content",
+			"description": "Sugar content in grams",
+			"type": "integer",
+			"minimum": 1000,
+			"maximum": 6000
+		},
+		"flour": {
+			"title": "Flour Content",
+			"description": "Flour content in grams",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 164
+		},
+		"egg_count": {
+			"title": "Flour Content",
+			"description": "Number of eggs used in the recipe",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 164
+		},
+		"krembo": {
+			"oneOf": [
+				{
+					"$comment": "krembo fields are required, but it can be null, this is for the frontend",
+					"type": "null"
+				},
+				{
+					"type": "object",
+					"required": [
+						"krembo_kind",
+						"wrap"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"krembo_kind": {
+							"const": "vanilla"
+						},
+						"wrap": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 30
+						}
+					}
+				},
+				{
+					"type": "object",
+					"required": [
+						"krembo_kind",
+						"code",
+						"crackles"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"krembo_kind": {
+							"const": "mocha"
+						},
+						"code": {
+							"title": "Mocha Code",
+							"type": "string",
+							"maxLength": 4
+						},
+						"crackles": {
+							"title": "Mocha Crackles",
+							"type": "string",
+							"enum": [
+								"I",
+								"N"
+							],
+							"default": "I",
+							"oneOf": [
+								{
+									"const": "N",
+									"description": "Normal."
+								},
+								{
+									"const": "I",
+									"description": "Inverse."
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	}
 }
-

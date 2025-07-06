@@ -1,0 +1,49 @@
+{
+	"$schema": "./json-schema.json",
+	"slices": [
+		{
+			"variation": "single",
+			"duration": 4.5,
+			"building_block_kind": "biscuit",
+			"flour": 100,
+			"sugar": 100,
+			"krembo": {
+				"krembo_kind": "vanilla",
+				"wrap": 10
+			}
+		},
+		{
+			"variation": "multi",
+			"duration": 444,
+			"techniques": [
+				{
+					"variation": "single",
+					"duration": null,
+					"building_block_kind": "cookie",
+					"egg_count": 12,
+					"flour": 100,
+					"sugar": 1000
+				},
+				{
+					"variation": "cyclic",
+					"duration": null,
+					"techniques": [
+						{
+							"duration": 100,
+							"variation": "single",
+							"building_block_kind": "cake",
+							"sugar": 1000
+						},
+						{
+							"duration": 100,
+							"variation": "single",
+							"building_block_kind": "pancake",
+							"path": "meow.bin",
+							"sugar": 1000
+						}
+					]
+				}
+			]
+		}
+	]
+}
