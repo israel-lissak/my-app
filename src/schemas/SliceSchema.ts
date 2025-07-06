@@ -4,8 +4,7 @@ import { RecipeSchema } from "../schemas/RecipeSchema";
 export const SliceSchema = z.object({
 	variation: z
 		.enum(["single", "multi", "cyclic"])
-		.describe("Variation of the slice, can be single, multi or cyclic")
-		.optional(),
+		.describe("Variation of the slice, can be single, multi or cyclic"),
 	power: z
 		.number()
 		.min(-15, "Power must be between -15 and 15")

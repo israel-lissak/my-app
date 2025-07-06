@@ -55,7 +55,6 @@ export default function SliceForm() {
 				<form.AppField
 					name="variation"
 					validators={{
-						onBlur: SliceSchema.shape.variation,
 						onChange: SliceSchema.shape.variation,
 					}}
 					children={(field) => (
