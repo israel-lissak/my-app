@@ -18,12 +18,22 @@ function RecipesTabs({ field, form }: { field: any; form: any }) {
 	return (
 		<div>
 			<Tabs value={activeTab} onValueChange={setActiveTab}>
-				<TabsList>
+				<TabsList className="flex items-center gap-2">
 					{recipes.map((_: any, i: number) => (
 						<TabsTrigger key={i} value={i.toString()}>
 							{`Recipe ${i + 1}`}
 						</TabsTrigger>
 					))}
+					<button
+						className="ml-2 px-3 py-1 bg-blue-500 text-white rounded text-sm"
+						onClick={() => {
+							field.pushValue({});
+							setActiveTab(recipes.length.toString());
+						}}
+						type="button"
+					>
+						Add Recipe
+					</button>
 				</TabsList>
 				{recipes.map((_: any, i: number) => (
 					<TabsContent key={i} value={i.toString()}>
@@ -115,16 +125,6 @@ function RecipesTabs({ field, form }: { field: any; form: any }) {
 					</TabsContent>
 				))}
 			</Tabs>
-			<button
-				className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-				onClick={() => {
-					field.pushValue({});
-					setActiveTab(recipes.length.toString());
-				}}
-				type="button"
-			>
-				Add Recipe
-			</button>
 		</div>
 	);
 }
