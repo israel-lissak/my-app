@@ -22,8 +22,8 @@ function RecipesTabs({ field, form }: { field: any; form: any }) {
 				onValueChange={setActiveTab}
 				className="max-w-full"
 			>
-				<TabsList className="flex items-center gap-2">
-					<div className="flex items-center max-w-[70vw] overflow-x-auto">
+				<TabsList className="flex items-center max-w-full">
+					<div className="flex items-center overflow-x-auto ">
 						{recipes.map((_: any, i: number) => (
 							<TabsTrigger key={i} value={i.toString()}>
 								{`Recipe ${i + 1}`}
@@ -31,7 +31,7 @@ function RecipesTabs({ field, form }: { field: any; form: any }) {
 						))}
 					</div>
 					<button
-						className="ml-2 px-3 py-1 bg-blue-500 text-white rounded text-sm"
+						className="ml-2 px-3 py-1 bg-blue-500 text-white rounded text-sm shadow-md"
 						onClick={() => {
 							field.pushValue({});
 							setActiveTab(recipes.length.toString());
