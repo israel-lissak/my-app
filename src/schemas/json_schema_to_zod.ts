@@ -184,7 +184,6 @@ const sliceDef = baseStepDef.refine(
 // Main schema
 const mainSchema = z
 	.object({
-		$schema: z.unknown().optional(),
 		slices: z.array(sliceDef).optional(),
 	})
 	.refine(
