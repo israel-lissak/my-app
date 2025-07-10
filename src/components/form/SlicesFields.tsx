@@ -353,7 +353,7 @@ function SliceFormFields({
 }
 
 // Placeholder for TechniquesFields, to be implemented next
-function TechniquesFields({ form, parentIndex, variation }: any) {
+function TechniquesFields({ form, parentIndex }: any) {
 	return (
 		<form.Field
 			name={`slices[${parentIndex}].techniques`}
@@ -367,7 +367,7 @@ function TechniquesFields({ form, parentIndex, variation }: any) {
 	);
 }
 
-function TechniquesTabs({ field, form, parentIndex }: any) {
+function TechniquesTabs({ field, form }: any) {
 	const techniques = Array.isArray(field.state.value) ? field.state.value : [];
 	const [activeTab, setActiveTab] = React.useState("0");
 
